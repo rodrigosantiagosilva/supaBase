@@ -1,119 +1,118 @@
 
 <template>
   <ion-page>
-    <ion-content class="app-content" :fullscreen="true">
-      <ion-grid class="app-shell">
-        <ion-row>
-          <ion-col>
-            <div class="login-brand">
-              <div class="brand-icon">
-                <ion-icon :icon="shieldCheckmarkOutline" />
-              </div>
+    <ion-content :fullscreen="true" class="app-content">
+      <ion-grid class="login-grid">
+        <ion-row class="ion-justify-content-center ion-align-items-center">
+          <ion-col size="12" size-sm="10" size-md="7" size-lg="5">
+            <ion-card class="app-card">
+              <ion-card-header class="ion-text-center">
+                <ion-icon :icon="lockClosedOutline" class="brand-icon" />
 
-              <h1>Bem-vindo!</h1>
-              <p>Entre na sua conta para continuar.</p>
-            </div>
+                <ion-card-title class="app-heading">
+                  Bem-vindo de volta!
+                </ion-card-title>
 
-            <ion-card class="app-card login-card">
-              <div class="login-heading">
-                <h2>Entrar</h2>
-                <p>Informe seus dados de acesso.</p>
-              </div>
+                <ion-card-subtitle class="app-description">
+                  Entre na sua conta para continuar.
+                </ion-card-subtitle>
+              </ion-card-header>
 
-              <form @submit.prevent="entrar">
-                <ion-item class="app-field" lines="none">
-                  <ion-icon :icon="mailOutline" slot="start" />
-
-                  <ion-input
-                    v-model="email"
-                    type="email"
-                    label="E-mail"
-                    label-placement="stacked"
-                    placeholder="seu@email.com"
-                    autocomplete="email"
-                    required
-                  />
-                </ion-item>
-
-                <ion-item class="app-field" lines="none">
-                  <ion-icon :icon="lockClosedOutline" slot="start" />
-
-                  <ion-input
-                    v-model="senha"
-                    :type="mostrarSenha ? 'text' : 'password'"
-                    label="Senha"
-                    label-placement="stacked"
-                    placeholder="Digite sua senha"
-                    autocomplete="current-password"
-                    required
-                  />
-
-                  <ion-button
-                    fill="clear"
-                    slot="end"
-                    type="button"
-                    @click="mostrarSenha = !mostrarSenha"
-                    :aria-label="mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'"
-                  >
-                    <ion-icon
-                      :icon="mostrarSenha ? eyeOffOutline : eyeOutline"
+              <ion-card-content>
+                <ion-list lines="none">
+                  <ion-item class="app-field">
+                    <ion-icon :icon="mailOutline" slot="start" />
+                    <ion-input
+                      v-model="email"
+                      label="E-mail"
+                      label-placement="stacked"
+                      type="email"
+                      placeholder="Digite seu e-mail"
+                      autocomplete="email"
+                      required
                     />
-                  </ion-button>
-                </ion-item>
+                  </ion-item>
 
-                <div class="forgot-password">
-                  <a @click="irPara('/recuperar-senha')">
-                    Esqueci minha senha
-                  </a>
-                </div>
+                  <ion-item class="app-field">
+                    <ion-icon :icon="lockClosedOutline" slot="start" />
+                    <ion-input
+                      v-model="senha"
+                      label="Senha"
+                      label-placement="stacked"
+                      :type="mostrarSenha ? 'text' : 'password'"
+                      placeholder="Digite sua senha"
+                      autocomplete="current-password"
+                      required
+                    />
 
-                <ion-text v-if="erro" class="app-error">
-                  {{ erro }}
+                    <ion-button
+                      slot="end"
+                      fill="clear"
+                      color="medium"
+                      :aria-label="mostrarSenha ? 'Ocultar senha' : 'Mostrar senha'"
+                      @click="mostrarSenha = !mostrarSenha"
+                    >
+                      <ion-icon
+                        :icon="mostrarSenha ? eyeOffOutline : eyeOutline"
+                      />
+                    </ion-button>
+                  </ion-item>
+                </ion-list>
+
+                <ion-button
+                  expand="block"
+                  fill="clear"
+                  class="forgot-button"
+                  @click="router.push('/recuperar-senha')"
+                >
+                  Esqueci minha senha
+                </ion-button>
+
+                <ion-text v-if="erro" color="danger">
+                  <ion-item lines="none" class="message-item">
+                    <ion-icon :icon="alertCircleOutline" slot="start" />
+                    <ion-label class="ion-text-wrap">
+                      {{ erro }}
+                    </ion-label>
+                  </ion-item>
                 </ion-text>
 
                 <ion-button
-                  class="app-button"
                   expand="block"
-                  type="submit"
+                  class="app-button"
                   :disabled="carregando"
+                  @click="entrar"
                 >
-                  <ion-spinner
-                    v-if="carregando"
-                    name="crescent"
-                    slot="start"
-                  />
-                  {{ carregando ? 'Entrando...' : 'Entrar na conta' }}
+                  <ion-spinner v-if="carregando" name="crescent" />
+                  <ion-text v-else>Entrar</ion-text>
                 </ion-button>
-              </form>
 
-              <div class="register-link">
-                <span>Não tem uma conta?</span>
-                <a @click="irPara('/cadastro')">Cadastre-se</a>
-              </div>
+                <ion-item lines="none" class="register-item">
+                  <ion-label class="ion-text-center">
+                    Ainda não tem uma conta?
+                  </ion-label>
+                </ion-item>
+
+                <ion-button
+                  expand="block"
+                  fill="outline"
+                  class="secondary-button"
+                  @click="router.push('/cadastro')"
+                >
+                  Criar conta
+                </ion-button>
+              </ion-card-content>
             </ion-card>
-
-            <div class="login-footer">
-              <ion-icon :icon="shieldCheckmarkOutline" />
-              <span>Seus dados são protegidos.</span>
-            </div>
           </ion-col>
         </ion-row>
       </ion-grid>
     </ion-content>
-
-    <ion-alert
-      :is-open="alertaAberto"
-      header="Atenção"
-      :message="mensagemAlerta"
-      :buttons="['OK']"
-      @did-dismiss="alertaAberto = false"
-    />
   </ion-page>
 </template>
 
 <script setup lang="ts">
 import { ref } from "vue";
-import { useRouter } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 
 import {
   IonPage,
@@ -122,26 +121,32 @@ import {
   IonRow,
   IonCol,
   IonCard,
+  IonCardHeader,
+  IonCardTitle,
+  IonCardSubtitle,
+  IonCardContent,
   IonItem,
+  IonList,
   IonInput,
-  IonIcon,
   IonButton,
+  IonIcon,
   IonText,
+  IonLabel,
   IonSpinner,
-  IonAlert,
 } from "@ionic/vue";
 
 import {
-  shieldCheckmarkOutline,
-  mailOutline,
   lockClosedOutline,
+  mailOutline,
   eyeOutline,
   eyeOffOutline,
+  alertCircleOutline,
 } from "ionicons/icons";
 
 import { loginUsuario } from "@/services/supabaseService";
 
 const router = useRouter();
+const route = useRoute();
 
 const email = ref("");
 const senha = ref("");
@@ -149,18 +154,11 @@ const mostrarSenha = ref(false);
 const carregando = ref(false);
 const erro = ref("");
 
-const alertaAberto = ref(false);
-const mensagemAlerta = ref("");
-
-function irPara(caminho: string) {
-  router.push(caminho);
-}
-
 async function entrar() {
   erro.value = "";
 
   if (!email.value.trim() || !senha.value) {
-    erro.value = "Preencha seu e-mail e sua senha.";
+    erro.value = "Preencha o e-mail e a senha.";
     return;
   }
 
@@ -169,9 +167,9 @@ async function entrar() {
   try {
     await loginUsuario(email.value, senha.value);
 
-    const destino = router.currentRoute.value.query.redirect;
+    const destino = route.query.redirect;
 
-    const caminhoDestino =
+    const caminho =
       typeof destino === "string" &&
       destino.startsWith("/") &&
       !destino.startsWith("//") &&
@@ -179,22 +177,12 @@ async function entrar() {
         ? destino
         : "/tabs/inicio";
 
-    await router.replace(caminhoDestino);
+    await router.replace(caminho);
   } catch (error: unknown) {
-    const mensagem =
-      error instanceof Error ? error.message : "";
-
-    if (
-      mensagem.toLowerCase().includes("invalid login credentials")
-    ) {
-      erro.value = "E-mail ou senha incorretos.";
-    } else if (
-      mensagem.toLowerCase().includes("email not confirmed")
-    ) {
-      erro.value = "Confirme seu e-mail antes de entrar.";
-    } else {
-      erro.value = mensagem || "Não foi possível entrar. Tente novamente.";
-    }
+    erro.value =
+      error instanceof Error
+        ? error.message
+        : "Não foi possível entrar. Confira seus dados.";
   } finally {
     carregando.value = false;
   }
@@ -202,109 +190,65 @@ async function entrar() {
 </script>
 
 <style scoped>
-.login-brand {
-  text-align: center;
-  margin: 28px 0 30px;
-}
-
-.brand-icon {
-  width: 76px;
-  height: 76px;
-  margin: 0 auto 18px;
+.login-grid {
+  min-height: 100%;
   display: flex;
   align-items: center;
-  justify-content: center;
-  background: #eaf1fa;
-  border: 1px solid #dce5f1;
+}
+
+.app-card {
+  margin: 16px;
   border-radius: 24px;
 }
 
-.brand-icon ion-icon {
-  color: #101d36;
-  font-size: 42px;
+.brand-icon {
+  font-size: 54px;
+  color: var(--ion-color-primary);
+  margin: 12px auto 20px;
 }
 
-.login-brand h1 {
-  color: #101d36;
-  font-size: 29px;
+.app-heading {
+  font-size: 25px;
   font-weight: 800;
-  margin: 0 0 10px;
+  color: var(--ion-color-primary);
 }
 
-.login-brand p,
-.login-heading p {
-  color: #718096;
-  font-size: 14px;
-  line-height: 1.6;
-  margin: 0;
+.app-description {
+  margin-top: 10px;
+  line-height: 1.5;
 }
 
-.login-card {
-  margin: 0;
+.app-field {
+  margin: 12px 0;
+  --border-radius: 14px;
+  --background: #f1f5fb;
+  --padding-start: 12px;
+  --inner-padding-end: 8px;
 }
 
-.login-heading h2 {
-  color: #101d36;
-  font-size: 23px;
-  font-weight: 800;
-  margin: 0 0 7px;
+.forgot-button {
+  margin: 8px 0 18px;
+  font-size: 13px;
+  text-transform: none;
 }
 
-.login-heading {
-  margin-bottom: 22px;
-}
-
-.forgot-password {
-  text-align: right;
-  margin: 15px 3px 8px;
-}
-
-.forgot-password a,
-.register-link a {
-  color: #315b96;
-  font-size: 14px;
-  font-weight: 700;
-  cursor: pointer;
-}
-
-.register-link {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 5px;
-  margin-top: 24px;
-  font-size: 14px;
-  color: #718096;
-}
-
-.login-footer {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  color: #718096;
-  font-size: 12px;
-  margin-top: 24px;
-}
-
-.login-footer ion-icon {
-  color: #315b96;
-  font-size: 17px;
-}
-
-.app-error {
-  display: block;
+.app-button,
+.secondary-button {
   margin-top: 12px;
+  min-height: 48px;
+  font-weight: 700;
+  text-transform: none;
 }
 
-@media (max-width: 360px) {
-  .login-brand h1 {
-    font-size: 25px;
-  }
+.register-item {
+  margin-top: 22px;
+  --background: transparent;
+  color: var(--ion-color-medium);
+  font-size: 14px;
+}
 
-  .login-card {
-    padding: 18px 14px;
-  }
+.message-item {
+  --background: transparent;
+  font-size: 14px;
 }
 </style>

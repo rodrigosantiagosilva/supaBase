@@ -5,6 +5,7 @@
 </template>
 
 <script setup>
+  import{ IonApp,IonRouterOutlet } from '@ionic/vue'
   import { ref, onMounted } from 'vue'
   import { supabase } from '@/lib/supabaseClient'
   
